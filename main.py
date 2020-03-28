@@ -8,8 +8,10 @@ from lib.one_table_func import find_likes, get_topic_id, find_quote_in_table, ge
 URL = "https://www.b17.ru/forum/?f=102"
 HOST = 'https://www.b17.ru'
 
+
 def one_paginate():
 	pass
+
 
 def forum_checker(URL):
 	#get all from one paginate pagegit
@@ -43,7 +45,6 @@ def extract_from_topic(topic_link):
 			parse_one_table(info_for_write)
 
 
-
 def parse_one_table(table):
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
@@ -61,6 +62,7 @@ def parse_one_table(table):
 	#date = insert_time_stamp(soup)
 	#print(date)
 
+  
 def get_info_from_topic(topic):
 	page = requests.get(HOST+topic)
 	soup = BeautifulSoup(page.content,features="lxml")
@@ -79,8 +81,6 @@ def main():
 	for topic_name,topic_link in topics.items():
 		print(topic_name)
 		extract_from_topic(topic_link)
-
-
 
 
 if __name__ == "__main__":
