@@ -48,7 +48,6 @@ def get_topic_id(from_topic):
 	return 		
 
 def find_quote_in_table(table):
-	soup = BeautifulSoup(str(table),"lxml")
 	results = soup.find('div', attrs={"class":"quote"})
 	if results:	
 		quote = (((((results.text).split('писал(а)')[-1]).split(':'))[-1]))
@@ -58,32 +57,72 @@ def find_quote_in_table(table):
 			return quote
 	return 'no'
 
-def find_author(table):
-	soup = BeautifulSoup(str(table),"lxml")
+def find_author(soup):
+	
 	results = soup.find('td', attrs={"class":"mes qq"})
-	if results:	
-		print(results)
-		if not quote:
-			return 'no'
+	clear_author = ((results['fio']).split('|'))[-1]
+	return clear_author
+	
+def find_text_message(soup):
+	results = soup.find('td', attrs={"class":"mes qq"})
+	return results.text
+	
+
+def find_likes(soup):
+	results = soup.find('span', attrs={"class":"n"})
+	if results:
+		return str(results.text)
+	return '0'
+
+
+def convert_to_date(raw_date):
+	now = datetime.datetime.now()
+	if re.match(r'Сегодня',str(raw_date)):
+		raw_date_formating = raw_date.split('-')
+		extact_hour_minute = (raw_date_formating[-1]).split(':')
+		hour,minute = extact_hour_minute[0],extact_hour_minute[1]
+		return hour+minute
+		# time_place = date = datetime.strptime(now,' %d %b %Y')
+		# newdates = date.replace(hour=11, minute=59)
+		# print(newdate)
+	else:
+		if re.match(r'Вчера',str(raw_date)):
+			raw_date_formating = raw_date.split('-')
+			extact_hour_minute = (raw_date_formating[-1]).split(':')
+			hour,minute = extact_hour_minute[0],extact_hour_minute[1]
+			return hour+minute
 		else:
-			return quote
-	return 'no'
+			return raw_date
+	
 
 
-def find_likes(table):
+
+
+def insert_time_stamp(soup):
+	try:
+		results = soup.find('p', attrs={"class":"date"})
+		clear_date = ((results.text).split('|'))[-1]
+		#vchera_to_date = convert_to_date(clear_date)
+		return clear_date
+	except:
+		pass
+
+def get_number_post(soup):
 	pass
-
-def insert_time_stamp(table):
-	pass
-
 def parse_one_table(table):
+	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
 	#rebuild regexp
 	# topic_id = get_topic_id(table)
-	quote = find_quote_in_table(table)
-	print(quote)
-	# print(topic_id)	
-	
+	# quote = find_quote_in_table(table)
+	# print(quote)
+	# print(topic_id)
+	# author = find_author(soup,table)
+	# print(author)	
+	likes = find_likes(soup)
+	print(likes)
+	date = insert_time_stamp(soup)
+	print(date)
 def get_info_from_topic(topic):
 	page = requests.get(HOST+topic)
 	soup = BeautifulSoup(page.content,features="lxml")
@@ -94,6 +133,7 @@ def get_info_from_topic(topic):
 def main():
 	topics = forum_checker(URL)
 	for topic_name,topic_link in topics.items():
+		print(topic_name)
 		extract_from_topic(topic_link)
 
 
