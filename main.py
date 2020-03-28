@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 import re
 from collections import OrderedDict
+from lib.one_table_func import find_likes, get_topic_id, find_quote_in_table, get_number_post 
 
 URL = "https://www.b17.ru/forum/?f=102"
 HOST = 'https://www.b17.ru'
@@ -37,78 +38,12 @@ def forum_checker(URL):
 
 def extract_from_topic(topic_link):
 	info = get_info_from_topic(topic_link)
+	#paginate here
 	for info_for_write in info:
 			parse_one_table(info_for_write)
 
-def get_topic_id(from_topic):
-	raw_topic = re.findall(r'\w{2}=\S\w{4}_\d+',str(from_topic))
-	if raw_topic:
-		topic_id = raw_topic[0].split('id="post_')
-		return topic_id[1]
-	return 		
-
-def find_quote_in_table(table):
-	results = soup.find('div', attrs={"class":"quote"})
-	if results:	
-		quote = (((((results.text).split('писал(а)')[-1]).split(':'))[-1]))
-		if not quote:
-			return 'no'
-		else:
-			return quote
-	return 'no'
-
-def find_author(soup):
-	
-	results = soup.find('td', attrs={"class":"mes qq"})
-	clear_author = ((results['fio']).split('|'))[-1]
-	return clear_author
-	
-def find_text_message(soup):
-	results = soup.find('td', attrs={"class":"mes qq"})
-	return results.text
-	
-
-def find_likes(soup):
-	results = soup.find('span', attrs={"class":"n"})
-	if results:
-		return str(results.text)
-	return '0'
 
 
-def convert_to_date(raw_date):
-	now = datetime.datetime.now()
-	if re.match(r'Сегодня',str(raw_date)):
-		raw_date_formating = raw_date.split('-')
-		extact_hour_minute = (raw_date_formating[-1]).split(':')
-		hour,minute = extact_hour_minute[0],extact_hour_minute[1]
-		return hour+minute
-		# time_place = date = datetime.strptime(now,' %d %b %Y')
-		# newdates = date.replace(hour=11, minute=59)
-		# print(newdate)
-	else:
-		if re.match(r'Вчера',str(raw_date)):
-			raw_date_formating = raw_date.split('-')
-			extact_hour_minute = (raw_date_formating[-1]).split(':')
-			hour,minute = extact_hour_minute[0],extact_hour_minute[1]
-			return hour+minute
-		else:
-			return raw_date
-	
-
-
-
-
-def insert_time_stamp(soup):
-	try:
-		results = soup.find('p', attrs={"class":"date"})
-		clear_date = ((results.text).split('|'))[-1]
-		#vchera_to_date = convert_to_date(clear_date)
-		return clear_date
-	except:
-		pass
-
-def get_number_post(soup):
-	pass
 def parse_one_table(table):
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
@@ -120,12 +55,21 @@ def parse_one_table(table):
 	# author = find_author(soup,table)
 	# print(author)	
 	likes = find_likes(soup)
-	print(likes)
-	date = insert_time_stamp(soup)
-	print(date)
+	number = get_number_post(soup)
+	print(number)
+	#print(likes)
+	#date = insert_time_stamp(soup)
+	#print(date)
+
 def get_info_from_topic(topic):
 	page = requests.get(HOST+topic)
 	soup = BeautifulSoup(page.content,features="lxml")
+	#if pagination
+	if soup.find("div",{"class":"page-list"}):
+		print("&"*10)
+		#TODO NEED flag for return link on with paginated_pages
+		#taget sticky links
+		#flag if we have pagination
 	topic_info = soup.find_all("table",{"class":"topic_post"})
 	return topic_info
 
