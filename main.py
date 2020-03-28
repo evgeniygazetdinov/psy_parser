@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 import re
 from collections import OrderedDict
-from lib.one_table import 
 
 URL = "https://www.b17.ru/forum/?f=102"
 HOST = 'https://www.b17.ru'
@@ -38,7 +37,6 @@ def forum_checker(URL):
 
 def extract_from_topic(topic_link):
 	info = get_info_from_topic(topic_link)
-	print(topic_link)
 	for info_for_write in info:
 			parse_one_table(info_for_write)
 
@@ -50,10 +48,27 @@ def get_topic_id(from_topic):
 	return 		
 
 def find_quote_in_table(table):
-	pass
+	soup = BeautifulSoup(str(table),"lxml")
+	results = soup.find('div', attrs={"class":"quote"})
+	if results:	
+		quote = (((((results.text).split('писал(а)')[-1]).split(':'))[-1]))
+		if not quote:
+			return 'no'
+		else:
+			return quote
+	return 'no'
 
 def find_author(table):
-	pass
+	soup = BeautifulSoup(str(table),"lxml")
+	results = soup.find('td', attrs={"class":"mes qq"})
+	if results:	
+		print(results)
+		if not quote:
+			return 'no'
+		else:
+			return quote
+	return 'no'
+
 
 def find_likes(table):
 	pass
@@ -64,9 +79,10 @@ def insert_time_stamp(table):
 def parse_one_table(table):
 	#extract values
 	#rebuild regexp
-	topic_id = get_topic_id(table)
+	# topic_id = get_topic_id(table)
 	quote = find_quote_in_table(table)
-	print(topic_id)	
+	print(quote)
+	# print(topic_id)	
 	
 def get_info_from_topic(topic):
 	page = requests.get(HOST+topic)
