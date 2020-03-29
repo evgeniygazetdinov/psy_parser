@@ -3,15 +3,14 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 import re
 from collections import OrderedDict
-from lib.one_table_func import find_likes, get_topic_id, find_quote_in_table, get_number_post,parse_one_table 
+from lib.one_table_func import get_info_from_topic, find_likes, get_topic_id, find_quote_in_table, get_number_post,parse_one_table 
+from lib.pagination import make_faked_links, get_links_from_link, find_nested_links, check_pagination, links_with_pagination  
+import time 
+from lib.change_ip import changer
+
 
 URL = "https://www.b17.ru/forum/?f=102"
 HOST = 'https://www.b17.ru'
-
-def one_paginate():
-	pass
-
-
 
 
 def forum_checker(URL):
@@ -46,58 +45,19 @@ def extract_from_topic(topic_link):
 			parse_one_table(info_for_write)
 
 
-
-def parse_one_table(table):
-	soup = BeautifulSoup(str(table),"lxml")
-	#extract values
-	#rebuild regexp
-	# topic_id = get_topic_id(table)
-	# quote = find_quote_in_table(table)
-	# print(quote)
-	# print(topic_id)
-	# author = find_author(soup,table)
-	# print(author)	
-	likes = find_likes(soup)
-	number = get_number_post(soup)
-	print(number)
-	#print(likes)
-	#date = insert_time_stamp(soup)
-	#print(date)
-
-
-def
-
-
-
-
-def check_pagination(topics,topics_name,topic_url):
-	#change list_urls if url has pagination ==> add pagination link to list
-	#to match tricky way
-	#get older dict check paginate after push into new
-	page = requests.get(HOST+topic_url[0])
+def all_numbers_in_page(url):
+	page = requests.get(HOST+url[0])
 	soup = BeautifulSoup(page.content,features="lxml")
-	if soup.find("div",{"class":"page-list"}):
-		find_pages_in topic(soup)
-		#topics[topic_name].append()
+	paginated = soup.find("div",{"class":"page-list"})
+	all_links_in_current_page = paginated.find_all('a')
+	return all_links_in_current_page
 
-
-def get_info_from_topic(topic):
-	page = requests.get(HOST+topic)
-	soup = BeautifulSoup(page.content,features="lxml")
-	topic_info = soup.find_all("table",{"class":"topic_post"})
-	return topic_info
 
 
 def main():
 	topics = forum_checker(URL)
-	topics_with_pagination = OrderedDict()
-	for topic_name,topic_link in topics.items():
-		print(topic_name)
-		check_pagination(topics_with_pagination,topic_name,topic_link)
-		#extract_from_topic(topic_link)
-
-
-
+	topics_with_pagination = links_with_pagination(topics)
+	print(topics_with_pagination)
 
 if __name__ == "__main__":
 	main()
