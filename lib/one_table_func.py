@@ -68,5 +68,23 @@ def insert_time_stamp(soup):
 def get_number_post(soup):
 	results = soup.find('p', attrs={"class":"date"})
 	clear_number= ((results.text).split('|'))[0]
-    number = (clear_number.split('№'))[-1]
+	number = (clear_number.split('№'))[-1]
 	return number
+
+
+def parse_one_table(table):
+	soup = BeautifulSoup(str(table),"lxml")
+	#extract values
+	#rebuild regexp
+	# topic_id = get_topic_id(table)
+	# quote = find_quote_in_table(table)
+	# print(quote)
+	# print(topic_id)
+	# author = find_author(soup,table)
+	# print(author)	
+	likes = find_likes(soup)
+	number = get_number_post(soup)
+	print(number)
+	#print(likes)
+	#date = insert_time_stamp(soup)
+	#print(date)
