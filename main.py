@@ -8,6 +8,7 @@ from lib.pagination import make_faked_links, get_links_from_link, find_nested_li
 import time 
 
 
+
 URL = "https://www.b17.ru/forum/?f=102"
 HOST = 'https://www.b17.ru'
 
@@ -50,6 +51,7 @@ def main():
 	#extract info 
 	print(topics_with_pagination)
 	#write_it by line into file
+
 
 if __name__ == "__main__":
 	main()
