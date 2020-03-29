@@ -71,6 +71,12 @@ def get_number_post(soup):
 	number = (clear_number.split('№'))[-1]
 	return number
 
+def get_info_from_topic(topic):
+	page = requests.get(HOST+topic)
+	soup = BeautifulSoup(page.content,features="lxml")
+	topic_info = soup.find_all("table",{"class":"topic_post"})
+	return topic_info
+
 
 def parse_one_table(table):
 	soup = BeautifulSoup(str(table),"lxml")
