@@ -6,7 +6,6 @@ from collections import OrderedDict
 from lib.one_table_func import get_info_from_topic, find_likes, get_topic_id, find_quote_in_table, get_number_post,parse_one_table 
 from lib.pagination import make_faked_links, get_links_from_link, find_nested_links, check_pagination, links_with_pagination  
 import time 
-from lib.change_ip import changer
 
 
 URL = "https://www.b17.ru/forum/?f=102"
@@ -45,19 +44,12 @@ def extract_from_topic(topic_link):
 			parse_one_table(info_for_write)
 
 
-def all_numbers_in_page(url):
-	page = requests.get(HOST+url[0])
-	soup = BeautifulSoup(page.content,features="lxml")
-	paginated = soup.find("div",{"class":"page-list"})
-	all_links_in_current_page = paginated.find_all('a')
-	return all_links_in_current_page
-
-
-
 def main():
 	topics = forum_checker(URL)
 	topics_with_pagination = links_with_pagination(topics)
+	#extract info 
 	print(topics_with_pagination)
+	#write_it by line into file
 
 if __name__ == "__main__":
 	main()
