@@ -1,22 +1,20 @@
 #!/usr/bin/env python
+ # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup, SoupStrainer
 import requests
 import re
 from collections import OrderedDict
 from lib.one_table_func import get_info_from_topic, find_likes, get_topic_id, find_quote_in_table, get_number_post,parse_one_table 
 from lib.pagination import make_faked_links, get_links_from_link, find_nested_links, check_pagination, links_with_pagination  
+from lib.const import URL, HOST, DELAY, headers, write_to_csv
 import time 
-
-
-
-URL = "https://www.b17.ru/forum/?f=102"
-HOST = 'https://www.b17.ru'
 
 
 def forum_checker(URL):
 	#get all from one paginate pagegit
 	forum_links = OrderedDict()
-	page = requests.get(URL)
+	page = requests.get(URL, headers = headers)
+	time.sleep(DELAY)
 	data = page.content
 	soup = BeautifulSoup(data,"lxml")
 	for link in soup.find_all('a'):
@@ -38,20 +36,20 @@ def forum_checker(URL):
 	return forum_links
 
 
-def extract_from_topic(topic_link):
-	info = get_info_from_topic(topic_link)
-	#paginate here
-	for info_for_write in info:
-			parse_one_table(info_for_write)
+def extract_from_topic(topic_dict):
+	for topic_name,topic_links in topic_dict.items():
+		for topic_link in topic_links:
+			info = get_info_from_topic(topic_link)
+			for info_for_write in info:
+				parse_one_table(info_for_write)
 
 
 def main():
 	topics = forum_checker(URL)
 	topics_with_pagination = links_with_pagination(topics)
-	#extract info 
-	print(topics_with_pagination)
-	#write_it by line into file
+	extract_info = extract_from_topic(topics_with_pagination)
 
 
 if __name__ == "__main__":
-	main()
+	#main()
+	write_to_csv()

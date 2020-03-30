@@ -1,10 +1,8 @@
 from collections import OrderedDict
 import requests
 from bs4 import BeautifulSoup
-
-
-HOST = 'https://www.b17.ru'
-
+import time 
+from lib.const import HOST, DELAY, headers
 
 def make_faked_links(host, number):
 	links = []
@@ -23,8 +21,9 @@ def get_links_from_link(link):
 def find_nested_links(topic_url):
 	#if he exist
 	links = []
-	page = requests.get(HOST+topic_url)
+	page = requests.get(HOST+topic_url,headers=headers)
 	soup = BeautifulSoup(page.content,features="lxml")
+	time.sleep(DELAY)
 	if soup.find("div",{"class":"page-list"}):
 		f = soup.find("div",{"class":"page-list"})
 		a = f.find_all('a')
