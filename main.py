@@ -41,7 +41,7 @@ def extract_from_topic(topic_dict):
 		for topic_link in topic_links:
 			info = get_info_from_topic(topic_link)
 			for info_for_write in info:
-				parse_one_table(info_for_write)
+				parse_one_table(topic_name, info_for_write)
 
 
 def main():
@@ -51,5 +51,4 @@ def main():
 
 
 if __name__ == "__main__":
-	#main()
-	write_to_csv()
+	main()

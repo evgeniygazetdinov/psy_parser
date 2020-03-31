@@ -51,8 +51,10 @@ def write_to_csv(info_for_write):
     # -*- coding: utf-8 -*-
     fields = ['topic id','topic name','number message', 'timestamp','txt msg', 'like', 'quote', 'who']  
     rows = [ [info_for_write['topic_id'], info_for_write['topic_name'], info_for_write['number_message'], info_for_write['likes'] , info_for_write['timestamp'] , info_for_write['txt_msg'] , info_for_write['quote'], info_for_write['who'] ]] 
-    filename = "university_records.csv"
-    with open(filename, 'w') as csvfile:  
-        csvwriter = csv.writer(csvfile)  
-        csvwriter.writerow(fields)  
-        csvwriter.writerows(rows)
+    filename = "res.csv"
+    with open('res.csv','a+',newline='') as fout:
+        writer=csv.writer(fout)    
+        writer.writerows([tests.keys()])
+        for row in zip(*tests.values()):
+            row=[s.encode('utf-8') for s in row]
+            writer.writerows([rows])
