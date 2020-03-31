@@ -39,7 +39,7 @@ def forum_checker(URL):
 
 
 def extract_from_topic(topic_dict):
-	for topic_name,topic_links in topic_dict.items():
+	for topic_name,topic_links in topic_dict.items()
 		for topic_link in topic_links:
 			info = get_info_from_topic(topic_link)
 			for info_for_write in info:

@@ -45,7 +45,7 @@ def convert_to_date(raw_date):
 	now = datetime.datetime.now()
 	# remove spaces 
 	template = str(raw_date).strip()
-	if re.match(r'\sСегодня\s',template):
+	if re.match(r'Сегодня',template):
 		print('HERER')
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
@@ -54,7 +54,7 @@ def convert_to_date(raw_date):
 		# time_place = date = datetime.strptime(now,' %d %b %Y')
 		# newdates = date.replace(hour=11, minute=59)
 		# print(newdate)
-	if re.match(r'\sВчера\s', template):
+	if re.match(r'Вчера', template):
 		print('HERER')
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
@@ -97,7 +97,7 @@ def parse_one_table(topic_name,table):
 	info_for_write['topic_name'] = topic_name
 	print(info_for_write['topic_name'])
 	#TODO
-	info_for_write['number_message'] = 1#get_number_post(soup)
+	info_for_write['number_message'] = get_number_post(soup)
 
 	info_for_write['likes']  = find_likes(soup)
 	print(info_for_write['likes'])

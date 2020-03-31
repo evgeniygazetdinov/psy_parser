@@ -8,8 +8,6 @@ import os
 
 
 delays = range(1,7,1)
-
-
 HOST = 'https://www.b17.ru'
 DELAY = np.random.choice(delays)
 headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
@@ -20,33 +18,6 @@ headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleW
         'Pragma': 'no-cache',}
 
 URL = "https://www.b17.ru/forum/?f=102"
-
-
-def get_free_proxies():
-    url = "https://free-proxy-list.net/"
-    # get the HTTP response and construct soup object
-    soup = bs(requests.get(url).content, "html.parser")
-    proxies = []
-    for row in soup.find("table", attrs={"id": "proxylisttable"}).find_all("tr")[1:]:
-        tds = row.find_all("td")
-        try:
-            ip = tds[0].text.strip()
-            port = tds[1].text.strip()
-            host = "{}:{}".format(ip,port)
-            proxies.append(host)
-        except IndexError:
-            continue
-    return proxies
-
-
-def get_random_proxies():
-    proxies = get_free_proxies() 
-    for proxy in proxies:
-        response = requests.get('https://ya.ru' )
-        if response.status_code == requests.codes['ok']:
-            return proxy
-        else:
-            continue
 
 class DictUnicodeWriter(object):
 
@@ -77,10 +48,9 @@ class DictUnicodeWriter(object):
         self.writer.writeheader()
 
 
-
 def write_to_csv(info_for_write):
     #notice use OrderedDict for save order
-	fields = ['topic id','topic name','number message','timestamp','txt msg','like','quote','who']
+	fields = ['topic_id','topic_name','number_message','timestamp','txt_msg','likes','quote','who']
 	file = 'out.csv'
 	with open(file,'a+',encoding='utf-8-sig',newline='') as f:
 		csv_dict = [row for row in csv.DictReader(f)]
@@ -88,3 +58,5 @@ def write_to_csv(info_for_write):
 		if os.stat(file).st_size == 0:
     			w.writeheader()
 		w.writerow(info_for_write)
+
+
