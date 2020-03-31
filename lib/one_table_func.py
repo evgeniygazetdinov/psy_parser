@@ -4,7 +4,7 @@ import time
 from bs4 import BeautifulSoup, SoupStrainer 
 from lib.const import URL, HOST, DELAY, headers, write_to_csv
 import datetime
-
+from collections import OrderedDict
 
 def get_topic_id(from_topic):
 	raw_topic = re.findall(r'\w{2}=\S\w{4}_\d+',str(from_topic))
@@ -45,7 +45,7 @@ def convert_to_date(raw_date):
 	now = datetime.datetime.now()
 	# remove spaces 
 	template = str(raw_date).strip()
-	if re.match(r'\sСегодня\s',template)):
+	if re.match(r'\sСегодня\s',template):
 		print('HERER')
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
@@ -88,31 +88,28 @@ def get_info_from_topic(topic):
 
 
 def parse_one_table(topic_name,table):
-	info_for_write = {}
+	info_for_write = OrderedDict()
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
 	#rebuild regexp
-	try:
-		info_for_write['topic_id'] = get_topic_id(table)
-		print(info_for_write['topic_id'])
-		info_for_write['topic_name'] = topic_name
-		print(info_for_write['topic_name'])
-		#TODO
-		info_for_write['number_message'] = 1#get_number_post(soup)
+	info_for_write['topic_id'] = get_topic_id(table)
+	print(info_for_write['topic_id'])
+	info_for_write['topic_name'] = topic_name
+	print(info_for_write['topic_name'])
+	#TODO
+	info_for_write['number_message'] = 1#get_number_post(soup)
 
-		info_for_write['likes']  = find_likes(soup)
-		print(info_for_write['likes'])
+	info_for_write['likes']  = find_likes(soup)
+	print(info_for_write['likes'])
 
-		#TODO
-		info_for_write['timestamp'] = insert_time_stamp(soup)
+	#TODO
+	info_for_write['timestamp'] = insert_time_stamp(soup)
 
-		print(info_for_write['timestamp'])
-		info_for_write['txt_msg'] = find_text_message(soup)
-		print(info_for_write['txt_msg'])
-		info_for_write['quote'] = find_quote_in_table(soup)
-		print(info_for_write['quote'])
-		info_for_write['who']  = find_author(soup)
-		print(info_for_write['who'])
-		write_to_csv(info_for_write)
-	except:
-		pass
+	print(info_for_write['timestamp'])
+	info_for_write['txt_msg'] = find_text_message(soup)
+	print(info_for_write['txt_msg'])
+	info_for_write['quote'] = find_quote_in_table(soup)
+	print(info_for_write['quote'])
+	info_for_write['who']  = find_author(soup)
+	print(info_for_write['who'])
+	write_to_csv(info_for_write)
