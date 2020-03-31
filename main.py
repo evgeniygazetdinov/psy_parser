@@ -10,6 +10,7 @@ from lib.const import URL, HOST, DELAY, headers, write_to_csv
 import time 
 
 
+
 def forum_checker(URL):
 	#get all from one paginate pagegit
 	forum_links = OrderedDict()
@@ -48,6 +49,7 @@ def main():
 	topics = forum_checker(URL)
 	topics_with_pagination = links_with_pagination(topics)
 	extract_info = extract_from_topic(topics_with_pagination)
+
 
 
 if __name__ == "__main__":
