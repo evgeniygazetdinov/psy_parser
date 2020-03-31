@@ -31,7 +31,7 @@ def find_author(soup):
 	
 def find_text_message(soup):
 	results = soup.find('td', attrs={"class":"mes qq"})
-	return results.text
+	return (str(results.text).split('|'))[-1]
 	
 
 def find_likes(soup):
@@ -43,9 +43,10 @@ def find_likes(soup):
 
 def convert_to_date(raw_date):
 	now = datetime.datetime.now()
-	# remove spaces 
+	# remove spaces
+	print(raw_date) 
 	template = str(raw_date).strip()
-	if re.match(r'\sСегодня\s',template):
+	if re.match(r'Сегодня',template):
 		print('HERER')
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
@@ -54,7 +55,7 @@ def convert_to_date(raw_date):
 		# time_place = date = datetime.strptime(now,' %d %b %Y')
 		# newdates = date.replace(hour=11, minute=59)
 		# print(newdate)
-	if re.match(r'\sВчера\s', template):
+	if re.match(r'Вчера', template):
 		print('HERER')
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
@@ -88,6 +89,7 @@ def get_info_from_topic(topic):
 
 
 def parse_one_table(topic_name,table):
+	#TODO filtering topic-post
 	info_for_write = OrderedDict()
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
@@ -96,15 +98,12 @@ def parse_one_table(topic_name,table):
 	print(info_for_write['topic_id'])
 	info_for_write['topic_name'] = topic_name
 	print(info_for_write['topic_name'])
-	#TODO
-	info_for_write['number_message'] = 1#get_number_post(soup)
-
+	info_for_write['number_message'] = get_number_post(soup)
 	info_for_write['likes']  = find_likes(soup)
 	print(info_for_write['likes'])
 
-	#TODO
+	#TODO fix dates
 	info_for_write['timestamp'] = insert_time_stamp(soup)
-
 	print(info_for_write['timestamp'])
 	info_for_write['txt_msg'] = find_text_message(soup)
 	print(info_for_write['txt_msg'])
