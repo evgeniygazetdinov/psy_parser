@@ -3,7 +3,8 @@ import numpy as np
 import requests
 import random
 from bs4 import BeautifulSoup as bs
-
+import csv
+import sys
 
 delays = range(1,7,1)
 
@@ -47,14 +48,15 @@ def get_random_proxies():
             continue
 
 def write_to_csv(info_for_write):
-    import csv  
-    # -*- coding: utf-8 -*-
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     fields = ['topic id','topic name','number message', 'timestamp','txt msg', 'like', 'quote', 'who']  
     rows = [ [info_for_write['topic_id'], info_for_write['topic_name'], info_for_write['number_message'], info_for_write['likes'] , info_for_write['timestamp'] , info_for_write['txt_msg'] , info_for_write['quote'], info_for_write['who'] ]] 
     filename = "res.csv"
-    with open('res.csv','a+',newline='') as fout:
+    with open('res.csv','a',newline='') as fout:
         writer=csv.writer(fout)    
         writer.writerows([tests.keys()])
         for row in zip(*tests.values()):
             row=[s.encode('utf-8') for s in row]
-            writer.writerows([rows])
+            writer.writerow([rows])
+            

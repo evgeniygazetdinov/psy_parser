@@ -43,7 +43,9 @@ def find_likes(soup):
 
 def convert_to_date(raw_date):
 	now = datetime.datetime.now()
-	if re.match(r'\sСегодня\s',str(raw_date)):
+	# remove spaces 
+	template = str(raw_date).strip()
+	if re.match(r'\sСегодня\s',template)):
 		print('HERER')
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
@@ -52,9 +54,8 @@ def convert_to_date(raw_date):
 		# time_place = date = datetime.strptime(now,' %d %b %Y')
 		# newdates = date.replace(hour=11, minute=59)
 		# print(newdate)
-	if re.match(r'\sВчера\s',str(raw_date)):
+	if re.match(r'\sВчера\s', template):
 		print('HERER')
-
 		raw_date_formating = raw_date.split('-')
 		extact_hour_minute = (raw_date_formating[-1]).split(':')
 		hour,minute = extact_hour_minute[0],extact_hour_minute[1]
