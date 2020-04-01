@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import time 
 from lib.const import HOST, DELAY, headers
+import re
+
 
 def make_faked_links(host, number):
 	links = []

@@ -31,7 +31,7 @@ def find_author(soup):
 	
 def find_text_message(soup):
 	results = soup.find('td', attrs={"class":"mes qq"})
-	return results.text
+	return (str(results.text).split('|'))[-1]
 	
 
 def find_likes(soup):
@@ -42,36 +42,34 @@ def find_likes(soup):
 
 
 def convert_to_date(raw_date):
-	now = datetime.datetime.now()
-	# remove spaces 
-	template = str(raw_date).strip()
-	if re.match(r'Сегодня',template):
-		print('HERER')
-		raw_date_formating = raw_date.split('-')
-		extact_hour_minute = (raw_date_formating[-1]).split(':')
-		hour,minute = extact_hour_minute[0],extact_hour_minute[1]
-		return str(hour+minute)
-		# time_place = date = datetime.strptime(now,' %d %b %Y')
-		# newdates = date.replace(hour=11, minute=59)
-		# print(newdate)
-	if re.match(r'Вчера', template):
-		print('HERER')
-		raw_date_formating = raw_date.split('-')
-		extact_hour_minute = (raw_date_formating[-1]).split(':')
-		hour,minute = extact_hour_minute[0],extact_hour_minute[1]
-		return str(hour+minute)
-	return raw_date
+    now = datetime.datetime.now()
+    # remove spaces
+    template = str(raw_date).strip()
+    if re.match(r'\w{5,8}',template):
+        raw_date_formating = raw_date.split('-')
+        extact_hour_minute = (raw_date_formating[-1]).split(':')
+        hour,minute = extact_hour_minute[0],extact_hour_minute[1]
+        t = datetime.time(hour=int(hour), minute=int(minute))
+        if re.match(r'Сегодня',template):
+            newdates = datetime.datetime.combine(datetime.date.today(), t)
+            return newdates.strftime("%Y-%m-%d-%H:%M")
+        else:
+            yesterday = datetime.date.today() - datetime.timedelta (days=1)
+            newdates = datetime.datetime.combine(yesterday, t)
+            return newdates.strftime("%Y-%m-%d-%H:%M")
+    datetime_object = datetime.datetime.strptime(template, '%d.%m.%Y-%H:%M')
+    raw_date = datetime_object.strftime("%Y-%m-%d-%H:%M")
+    return raw_date
+
 
 
 def insert_time_stamp(soup):
 	clear_date = datetime.datetime.now()
-	try:
-		results = soup.find('p', attrs={"class":"date"})
-		clear_date = ((results.text).split('|'))[-1]
-		vchera_to_date = convert_to_date(clear_date)
-	except:
-		pass
-		return clear_date
+	results = soup.find('p', attrs={"class":"date"})
+	clear_date = ((results.text).split('|'))[-1]
+	vchera_to_date = convert_to_date(clear_date)
+	return vchera_to_date
+
 
 def get_number_post(soup):
 	results = soup.find('p', attrs={"class":"date"})
@@ -87,7 +85,20 @@ def get_info_from_topic(topic):
 	return topic_info
 
 
+def get_info_from_topic(topic):
+	#return list tables and filter by null tables
+    page = requests.get(HOST+topic)
+    soup = BeautifulSoup(page.content,features="lxml")
+    #filtering here
+    topic_info = soup.find_all("table",{"class":"topic_post"})
+    for table in topic_info:
+        if str(table) == '<table class="topic_post"></table>':
+            table.decompose()
+    return topic_info
+
+
 def parse_one_table(topic_name,table):
+	#TODO filtering topic-post with js
 	info_for_write = OrderedDict()
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
@@ -96,15 +107,10 @@ def parse_one_table(topic_name,table):
 	print(info_for_write['topic_id'])
 	info_for_write['topic_name'] = topic_name
 	print(info_for_write['topic_name'])
-	#TODO
 	info_for_write['number_message'] = get_number_post(soup)
-
 	info_for_write['likes']  = find_likes(soup)
 	print(info_for_write['likes'])
-
-	#TODO
 	info_for_write['timestamp'] = insert_time_stamp(soup)
-
 	print(info_for_write['timestamp'])
 	info_for_write['txt_msg'] = find_text_message(soup)
 	print(info_for_write['txt_msg'])
