@@ -62,12 +62,13 @@ def convert_to_date(raw_date):
     return raw_date
 
 
+
 def insert_time_stamp(soup):
 	clear_date = datetime.datetime.now()
 	results = soup.find('p', attrs={"class":"date"})
 	clear_date = ((results.text).split('|'))[-1]
 	vchera_to_date = convert_to_date(clear_date)
-	return clear_date
+	return vchera_to_date
 
 
 def get_number_post(soup):
@@ -75,6 +76,13 @@ def get_number_post(soup):
 	clear_number= ((results.text).split('|'))[0]
 	number = (clear_number.split('№'))[-1]
 	return number
+#
+def get_info_from_topic(topic):
+	page = requests.get(HOST+topic, headers=headers,)
+	soup = BeautifulSoup(page.content,features="lxml")
+	time.sleep(DELAY)
+	topic_info = soup.find_all("table",{"class":"topic_post"})
+	return topic_info
 
 
 def get_info_from_topic(topic):
@@ -90,7 +98,7 @@ def get_info_from_topic(topic):
 
 
 def parse_one_table(topic_name,table):
-	#TODO filtering topic-post
+	#TODO filtering topic-post with js
 	info_for_write = OrderedDict()
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values
