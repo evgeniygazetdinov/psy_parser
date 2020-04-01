@@ -19,8 +19,8 @@ headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleW
         'Accept-Language': 'en-US,en;q=0.9',
         'Pragma': 'no-cache',}
 
-URL = "https://www.b17.ru/forum/?f=102"
-
+#URL = "https://www.b17.ru/forum/?f=102"
+URL = "https://www.b17.ru/forum/?page=1&f=102&page_full=1"
 
 class DictUnicodeWriter(object):
 

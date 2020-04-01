@@ -42,27 +42,24 @@ def find_likes(soup):
 
 
 def convert_to_date(raw_date):
+    now = datetime.datetime.now()
     # remove spaces
-	#refactor after
     template = str(raw_date).strip()
-    if re.match(r'Сегодня',template):
+    if re.match(r'\w{5,8}',template):
         raw_date_formating = raw_date.split('-')
         extact_hour_minute = (raw_date_formating[-1]).split(':')
         hour,minute = extact_hour_minute[0],extact_hour_minute[1]
         t = datetime.time(hour=int(hour), minute=int(minute))
-        newdates = datetime.datetime.combine(datetime.date.today(), t)
-        return newdates.strftime("%Y-%m-%d-%H:%M")
-    if re.match(r'Вчера', template):
-        raw_date_formating = raw_date.split('-')
-        extact_hour_minute = (raw_date_formating[-1]).split(':')
-        hour,minute = extact_hour_minute[0],extact_hour_minute[1]
-        yesterday = datetime.date.today() - datetime.timedelta (days=1)
-        t = datetime.time(hour=int(hour), minute=int(minute))
-        newdates = datetime.datetime.combine(yesterday, t)
-        return newdates.strftime("%Y-%m-%d-%H:%M")
-    
+        if re.match(r'Сегодня',template):
+            newdates = datetime.datetime.combine(datetime.date.today(), t)
+            return newdates.strftime("%Y-%m-%d-%H:%M")
+        else:
+            yesterday = datetime.date.today() - datetime.timedelta (days=1)
+            newdates = datetime.datetime.combine(yesterday, t)
+            return newdates.strftime("%Y-%m-%d-%H:%M")
+    datetime_object = datetime.datetime.strptime(template, '%d.%m.%Y-%H:%M')
+    raw_date = datetime_object.strftime("%Y-%m-%d-%H:%M")
     return raw_date
-
 
 
 def insert_time_stamp(soup):
@@ -72,20 +69,24 @@ def insert_time_stamp(soup):
 	vchera_to_date = convert_to_date(clear_date)
 	return clear_date
 
+
 def get_number_post(soup):
 	results = soup.find('p', attrs={"class":"date"})
 	clear_number= ((results.text).split('|'))[0]
 	number = (clear_number.split('№'))[-1]
 	return number
-#
+
+
 def get_info_from_topic(topic):
-	page = requests.get(HOST+topic, headers=headers,)
-	soup = BeautifulSoup(page.content,features="lxml")
-	time.sleep(DELAY)
-	#filtering here
-	topic_info = soup.find_all("table",{"class":"topic_post"})
-	wrong = '<table class="topic_post"></table>'
-	return topic_info
+	#return list tables and filter by null tables
+    page = requests.get(HOST+topic)
+    soup = BeautifulSoup(page.content,features="lxml")
+    #filtering here
+    topic_info = soup.find_all("table",{"class":"topic_post"})
+    for table in topic_info:
+        if str(table) == '<table class="topic_post"></table>':
+            table.decompose()
+    return topic_info
 
 
 def parse_one_table(topic_name,table):
@@ -101,8 +102,6 @@ def parse_one_table(topic_name,table):
 	info_for_write['number_message'] = get_number_post(soup)
 	info_for_write['likes']  = find_likes(soup)
 	print(info_for_write['likes'])
-
-	#TODO fix dates
 	info_for_write['timestamp'] = insert_time_stamp(soup)
 	print(info_for_write['timestamp'])
 	info_for_write['txt_msg'] = find_text_message(soup)
