@@ -5,7 +5,7 @@ import requests
 import re
 from collections import OrderedDict
 from lib.one_table_func import get_info_from_topic, find_likes, get_topic_id, find_quote_in_table, get_number_post, parse_one_table 
-from lib.pagination import make_faked_links, get_links_from_link, find_nested_links, check_pagination, links_with_pagination  
+from lib.pagination import make_faked_links, get_links_from_link, find_nested_links, check_pagination, links_with_pagination, main_paginator, find_main_links, get_main_links_from_link  
 from lib.const import URL, HOST, DELAY, headers, write_to_csv
 from lib.protect import do_some_protection
 import time 
@@ -46,15 +46,18 @@ def extract_from_topic(topic_dict):
 				if len(info_for_write) == 0:
 					continue
 				parse_one_table(topic_name, info_for_write)
-
+def go_by_pages(forum_links):
+	for link in forum_links:
+		topics = forum_checker(link)
+		topics_with_pagination = links_with_pagination(topics)
+		extract_info = extract_from_topic(topics_with_pagination)
 
 def main():
 	#for avoid
 	do_some_protection()
+	links = main_paginator(URL)
+	go_by_pages(links)
 	
-	topics = forum_checker(URL)
-	topics_with_pagination = links_with_pagination(topics)
-	extract_info = extract_from_topic(topics_with_pagination)
 
 
 if __name__ == "__main__":
