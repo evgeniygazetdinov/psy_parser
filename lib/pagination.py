@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import time 
 from lib.const import HOST, DELAY, headers
+import re
 
 def make_faked_links(host, number):
 	links = []
@@ -14,7 +15,11 @@ def get_links_from_link(link):
 	parse_link = link.split('p=')
 	host = parse_link[0]
 	clean_number = parse_link[-1].split('#')
+	#if re.match(r'topic.php',clean_number):
+		
+	#add filtering page
 	links = make_faked_links(host,int(clean_number[0]))
+
 	return links
 
 
