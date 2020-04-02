@@ -62,7 +62,6 @@ def convert_to_date(raw_date):
     return raw_date
 
 
-
 def insert_time_stamp(soup):
 	clear_date = datetime.datetime.now()
 	results = soup.find('p', attrs={"class":"date"})
@@ -77,6 +76,7 @@ def get_number_post(soup):
 	number = (clear_number.split('№'))[-1]
 	return number
 #
+
 def get_info_from_topic(topic):
 	page = requests.get(HOST+topic, headers=headers,)
 	soup = BeautifulSoup(page.content,features="lxml")
@@ -97,8 +97,21 @@ def get_info_from_topic(topic):
     return topic_info
 
 
+def get_info_from_topic(topic):
+	#return list tables and filter by null tables
+    page = requests.get(HOST+topic)
+    soup = BeautifulSoup(page.content,features="lxml")
+    #filtering here
+    topic_info = soup.find_all("table",{"class":"topic_post"})
+    for table in topic_info:
+        if str(table) == '<table class="topic_post"></table>':
+            table.decompose()
+    return topic_info
+
+
 def parse_one_table(topic_name,table):
-	#TODO filtering topic-post with js
+	#TODO filtering topic-post
+
 	info_for_write = OrderedDict()
 	soup = BeautifulSoup(str(table),"lxml")
 	#extract values

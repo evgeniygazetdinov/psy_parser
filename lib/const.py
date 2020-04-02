@@ -50,7 +50,7 @@ class DictUnicodeWriter(object):
     def writeheader(self):
         self.writer.writeheader()
 
-        
+
 def write_to_csv(info_for_write):
     #notice use OrderedDict for save order
 	fields = ['topic_id','topic_name','number_message','timestamp','txt_msg','likes','quote','who']
@@ -62,4 +62,3 @@ def write_to_csv(info_for_write):
     			w.writeheader()
 		w.writerow(info_for_write)
 
-    
