@@ -46,11 +46,14 @@ def extract_from_topic(topic_dict):
 				if len(info_for_write) == 0:
 					continue
 				parse_one_table(topic_name, info_for_write)
+
+
 def go_by_pages(forum_links):
 	for link in forum_links:
 		topics = forum_checker(link)
 		topics_with_pagination = links_with_pagination(topics)
 		extract_info = extract_from_topic(topics_with_pagination)
+
 
 def main():
 	#for avoid

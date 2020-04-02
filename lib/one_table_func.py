@@ -67,7 +67,7 @@ def insert_time_stamp(soup):
 	results = soup.find('p', attrs={"class":"date"})
 	clear_date = ((results.text).split('|'))[-1]
 	vchera_to_date = convert_to_date(clear_date)
-	return clear_date
+	return vchera_to_date
 
 
 def get_number_post(soup):

@@ -62,15 +62,11 @@ def get_quatity_pages(number):
 	return links
 
 
-
-
 def get_main_links_from_link(link):
 	parse_link = (link.split('page='))[-1]
 	clean_number = (parse_link.split('&'))[0]
 	links = get_quatity_pages(int(clean_number))
 	return links
-
-
 
 
 def find_main_links(url):
@@ -79,13 +75,15 @@ def find_main_links(url):
 	if page.status_code == '503':
 		module = importlib.import_module('main.main')
 		reload(module)
-	print('not banned')
-	soup = BeautifulSoup(page.content,features="lxml")
-	time.sleep(DELAY)
-	f = soup.find("div",{"class":"page-list"})
-	a = f.find_all('a')
-	links = get_main_links_from_link(a[-1].get('href'))
-	return links
+		print('banned')
+	else:
+		print('not banned')
+		soup = BeautifulSoup(page.content,features="lxml")
+		time.sleep(DELAY)
+		f = soup.find("div",{"class":"page-list"})
+		a = f.find_all('a')
+		links = get_main_links_from_link(a[-1].get('href'))
+		return links
 	
 
 
