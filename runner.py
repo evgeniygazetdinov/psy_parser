@@ -1,18 +1,14 @@
 import time
 import sys
+from now import how_many_rows_now
 
-def how_many_rows_now():
-	with open('out.csv') as f:
-    	   return sum(1 for line in f)	
-
-
-while(how_many_rows() <20000000):
-    try:
-        exec(open('main.py').read())
-	print('now rows ')
-	print(how_many_rows_now())
-        time.sleep(5)
-    except:
-        print("something happend")
-        print(sys.exc_info())
-        pass
+while(how_many_rows_now() <20000000):
+	try:
+		exec(open('main.py').read())
+		print('now rows')
+		print(how_many_rows_now())
+		time.sleep(5)
+	except:
+		print("something happend")
+		print(sys.exc_info()[1])
+		pass
