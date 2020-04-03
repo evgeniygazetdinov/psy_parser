@@ -9,7 +9,6 @@ import os
 
 delays = range(1,7,1)
 
-
 HOST = 'https://www.b17.ru'
 DELAY = np.random.choice(delays)
 headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
@@ -51,7 +50,6 @@ class DictUnicodeWriter(object):
         self.writer.writeheader()
 
 
-
 def write_to_csv(info_for_write):
     #notice use OrderedDict for save order
 	fields = ['topic_id','topic_name','number_message','timestamp','txt_msg','likes','quote','who']
@@ -62,3 +60,4 @@ def write_to_csv(info_for_write):
 		if os.stat(file).st_size == 0:
     			w.writeheader()
 		w.writerow(info_for_write)
+

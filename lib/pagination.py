@@ -9,7 +9,6 @@ import importlib
 from os.path import basename
 #=======================inside one page===================================================
 
-
 def make_faked_links(host, number):
 	links = []
 	for i in range(1,number+1,1):
@@ -21,7 +20,6 @@ def get_links_from_link(link):
 	host = parse_link[0]
 	clean_number = parse_link[-1].split('#')
 	links = make_faked_links(host,int(clean_number[0]))
-
 	return links
 
 
@@ -49,7 +47,6 @@ def links_with_pagination(topics):
 	for topic_name,topic_link in topics.items():
 		topics_with_pagination[topic_name] = check_pagination(topic_link)
 	return topics_with_pagination
-
 
 
 # =================outside one page=================================
@@ -84,10 +81,11 @@ def find_main_links(url):
 		a = f.find_all('a')
 		links = get_main_links_from_link(a[-1].get('href'))
 		return links
-	
-
 
 
 def main_paginator(begin_url):
 	links_from_main_page = find_main_links(begin_url)
 	return links_from_main_page
+
+
+
