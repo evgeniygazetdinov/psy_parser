@@ -21,7 +21,6 @@ headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleW
 #URL = "https://www.b17.ru/forum/?f=102"
 URL = "https://www.b17.ru/forum/?page=1&f=102&page_full=1"
 
-
 class DictUnicodeWriter(object):
 
     def __init__(self, f, fieldnames, dialect=csv.excel, encoding="utf-8", **kwds):
